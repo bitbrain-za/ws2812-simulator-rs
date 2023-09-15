@@ -12,15 +12,16 @@ use smart_led_effects::Srgb;
 
 const COUNT: usize = 55;
 const EFFECTS_COUNT: usize = 13;
-const REFRESH_DURATION: std::time::Duration = std::time::Duration::from_millis(10);
+const REFRESH_DURATION: std::time::Duration = std::time::Duration::from_millis(50);
 
 lazy_static! {
-    static ref INDEX: Mutex<usize> = Mutex::new(0);
+    static ref INDEX: Mutex<usize> = Mutex::new(14);
     static ref BOUNCE: Mutex<effects::Bounce> =
         Mutex::new(effects::Bounce::new(COUNT, None, None, None, None, None));
     static ref RAINBOW: Mutex<effects::Rainbow> = Mutex::new(effects::Rainbow::new(COUNT, None));
     static ref BREATHE: Mutex<effects::Breathe> =
         Mutex::new(effects::Breathe::new(COUNT, None, None));
+    static ref COLLIDE: Mutex<effects::Collision> = Mutex::new(effects::Collision::new(COUNT));
     static ref CYCLE: Mutex<effects::Cycle> = Mutex::new(effects::Cycle::new(COUNT, None));
     static ref FIRE: Mutex<effects::Fire> = Mutex::new(effects::Fire::new(COUNT, None, None));
     static ref METEOR: Mutex<effects::Meteor> =
@@ -47,6 +48,8 @@ lazy_static! {
         Mutex::new(effects::Twinkle::sparkle(COUNT, None));
     static ref SNOW: Mutex<effects::SnowSparkle> =
         Mutex::new(effects::SnowSparkle::new(COUNT, None, None, None, None));
+    static ref CHRISTMAS: Mutex<effects::Christmas> =
+        Mutex::new(effects::Christmas::new(COUNT, None, None, None, None));
     static ref WIPE: Mutex<effects::Wipe> = Mutex::new(effects::Wipe::colour_wipe(
         COUNT,
         Srgb::<u8>::new(0, 255, 0),
@@ -69,6 +72,8 @@ fn get_effect(index: usize) -> Vec<Srgb<u8>> {
         10 => SPARKLE.lock().unwrap().next().unwrap(),
         11 => SNOW.lock().unwrap().next().unwrap(),
         12 => WIPE.lock().unwrap().next().unwrap(),
+        13 => CHRISTMAS.lock().unwrap().next().unwrap(),
+        14 => COLLIDE.lock().unwrap().next().unwrap(),
 
         _ => BOUNCE.lock().unwrap().next().unwrap(),
     }
@@ -127,20 +132,16 @@ fn main() {
             }
         });
 
-        // add the button and the drawing area to a box
         let box_ = gtk::Box::new(gtk::Orientation::Vertical, 0);
         box_.append(&button);
         box_.append(&drawing_area);
         window.set_child(Some(&box_));
-
-        // window.set_child(Some(&drawing_area));
 
         timeout_add_local(REFRESH_DURATION, move || {
             drawing_area.queue_draw();
             ControlFlow::Continue
         });
 
-        // Show the window.
         window.present();
     });
 
