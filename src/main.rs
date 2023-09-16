@@ -21,7 +21,8 @@ lazy_static! {
     static ref RAINBOW: Mutex<effects::Rainbow> = Mutex::new(effects::Rainbow::new(COUNT, None));
     static ref BREATHE: Mutex<effects::Breathe> =
         Mutex::new(effects::Breathe::new(COUNT, None, None));
-    static ref COLLIDE: Mutex<effects::Collision> = Mutex::new(effects::Collision::new(COUNT));
+    static ref COLLIDE: Mutex<effects::Collision> =
+        Mutex::new(effects::Collision::new(COUNT, None));
     static ref CYCLE: Mutex<effects::Cycle> = Mutex::new(effects::Cycle::new(COUNT, None));
     static ref FIRE: Mutex<effects::Fire> = Mutex::new(effects::Fire::new(COUNT, None, None));
     static ref METEOR: Mutex<effects::Meteor> =
